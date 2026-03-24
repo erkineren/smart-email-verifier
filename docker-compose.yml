@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  email-verifier-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart_email_verifier
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    env_file:
+      - .env
+    # Optional: If you want to connect this to an existing docker network (like dokploy-network)
+    # networks:
+    #   - dokploy-network
+
+# networks:
+#   dokploy-network:
+#     external: true
