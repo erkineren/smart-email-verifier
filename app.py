@@ -14,10 +14,15 @@ from pathlib import Path
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
+# --- MCP App (must be created before FastAPI to pass lifespan) ---
+from mcp_server import mcp
+mcp_app = mcp.streamable_http_app()
+
 app = FastAPI(
     title="Smart Email Verifier API",
     description="A smart email verification system with Catch-All detection and anti-tarpit capabilities.",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=mcp_app.router.lifespan_context,
 )
 
 # --- Security: API Key Check ---
@@ -90,7 +95,6 @@ def health_check():
     return {"status": "ok", "message": "Email Verifier API is running."}
 
 # --- MCP Server Integration ---
-from mcp_server import mcp
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -110,4 +114,4 @@ class MCPAuthMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 app.add_middleware(MCPAuthMiddleware)
-app.mount("/mcp", mcp.streamable_http_app())
+app.mount("/mcp", mcp_app)

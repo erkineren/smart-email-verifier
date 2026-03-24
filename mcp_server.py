@@ -14,7 +14,7 @@ env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
 # Initialize the FastMCP server
-mcp = FastMCP("Email Verifier MCP")
+mcp = FastMCP("Email Verifier MCP", streamable_http_path="/")
 
 @mcp.tool()
 def verify_email(email: str) -> Dict[str, Any]:
