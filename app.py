@@ -110,4 +110,4 @@ class MCPAuthMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 app.add_middleware(MCPAuthMiddleware)
-app.mount("/mcp", mcp.sse_app())
+app.mount("/mcp", mcp.streamable_http_app())

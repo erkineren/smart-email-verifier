@@ -100,25 +100,26 @@ docker-compose up -d --build
 ```
 This will start the API on `http://localhost:8000` inside a detached container (`smart_email_verifier`).
 
-### Method 4: Model Context Protocol (MCP) Server via HTTP (SSE)
+### Method 4: Model Context Protocol (MCP) Server via HTTP (Streamable HTTP)
 
-The application mounts a production-ready FastMCP server directly into the FastAPI application. This means when you deploy this project (e.g., via Docker), the MCP tools are exposed securely over HTTP using Server-Sent Events (SSE).
+The application mounts a production-ready FastMCP server directly into the FastAPI application. This means when you deploy this project (e.g., via Docker), the MCP tools are exposed securely over HTTP using the MCP Streamable HTTP transport.
 
 You **MUST** authenticate with your API Key to use the MCP Server.
 
 #### 🤖 Cursor Integration
 1. Open Cursor Settings -> Features -> MCP Servers.
 2. Click **+ Add New MCP Server**.
-3. Set **Type** to `sse`.
+3. Set **Type** to `http`.
 4. Set **Name** to `SmartEmailVerifier`.
-5. Set **URL** to: `https://your-deployed-domain.com/mcp/sse?token=your_super_secret_api_key_here` (Replace with your actual domain and API Key).
+5. Set **URL** to: `https://your-deployed-domain.com/mcp` (Replace with your actual domain).
+6. Add header `X-API-Key: your_super_secret_api_key_here`.
 
 #### 🤖 Claude Code & Claude Desktop Integration
 
-Claude natively supports HTTP/SSE connections. You can add it directly via the Claude Code CLI:
+Claude natively supports the MCP Streamable HTTP transport. You can add it directly via the Claude Code CLI:
 
 ```bash
-claude mcp add-json EmailVerifier '{"type":"http","url":"https://your-deployed-domain.com/mcp/sse","headers":{"X-API-Key":"your_super_secret_api_key_here"}}'
+claude mcp add-json EmailVerifier '{"type":"http","url":"https://your-deployed-domain.com/mcp","headers":{"X-API-Key":"your_super_secret_api_key_here"}}'
 ```
 
 Alternatively, you can manually add this to your configuration file (`.mcp.json` or `claude_desktop_config.json`):
@@ -127,7 +128,7 @@ Alternatively, you can manually add this to your configuration file (`.mcp.json`
   "mcpServers": {
     "EmailVerifier": {
       "type": "http",
-      "url": "https://your-deployed-domain.com/mcp/sse",
+      "url": "https://your-deployed-domain.com/mcp",
       "headers": {
         "X-API-Key": "your_super_secret_api_key_here"
       }
